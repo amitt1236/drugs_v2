@@ -54,7 +54,7 @@ class GNNEncoder(nn.Module):
         # Pooling node features 
         x = pyg_nn.global_mean_pool(x,batch)
 
-        return x
+        return F.softmax(x)
     
     def loss(self, graph_features, text_features, labels):
         # normalized features

@@ -50,7 +50,7 @@ if __name__ == "__main__":
             ])
 
     
-    train(gnn_model, biobert, tokenizer, loader, device, 5)
+    train(gnn_model, biobert, tokenizer, loader, device, 50)
     
     
     
