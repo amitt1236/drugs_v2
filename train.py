@@ -19,6 +19,8 @@ def train(graph_model, text_model, tokenizer, loader, device, epoch):
             text_features = text_model(tokens).pooler_output
             
             graph_features = graph_model(batch)
+            if text_features.shape[0] != batch.batch.max()+1:
+                print('fuck')
             labels = torch.arange(batch.batch.max()+1 ,dtype=torch.long, device=device)
 
             loss = gnn_model.loss(graph_features, text_features, labels)
