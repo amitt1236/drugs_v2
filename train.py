@@ -37,7 +37,7 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # load data
     dataset = CustomDataset('./parse_data/sum.csv')
-    loader = DataLoader(dataset, batch_size=22, shuffle=True)
+    loader = DataLoader(dataset, batch_size=36, shuffle=True)
 
     # Load BioBERT pre-trained model and tokenizer
     tokenizer = AutoTokenizer.from_pretrained('dmis-lab/biobert-v1.1')
