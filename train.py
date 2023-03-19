@@ -15,12 +15,10 @@ def train(graph_model, text_model, tokenizer, loader, device, epoch):
             opt.zero_grad()
 
             # Convert text to tensors
-            tokens = tokenizer(batch.y, padding=False, truncation=False, return_tensors="pt")["input_ids"].to(device)
+            tokens = tokenizer(batch.y, padding=True, truncation=True, return_tensors="pt")["input_ids"].to(device)
             text_features = text_model(tokens).pooler_output
             
             graph_features = graph_model(batch)
-            if text_features.shape[0] != batch.batch.max()+1:
-                print(f"graph feats {graph_features.shape[0]}, text feat {text_features.shape[0]} batch {batch.batch.max()+1}")
 
             labels = torch.arange(batch.batch.max()+1 ,dtype=torch.long, device=device)
 
@@ -37,7 +35,7 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # load data
     dataset = CustomDataset('./parse_data/sum.csv')
-    loader = DataLoader(dataset, batch_size=16, shuffle=True)
+    loader = DataLoader(dataset, batch_size=22, shuffle=True)
 
     # Load BioBERT pre-trained model and tokenizer
     tokenizer = AutoTokenizer.from_pretrained('dmis-lab/biobert-v1.1')
