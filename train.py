@@ -19,6 +19,8 @@ def train(graph_model, text_model, tokenizer, loader, device, epoch):
             text_features = text_model(tokens).pooler_output
             
             graph_features = graph_model(batch)
+            if text_features.shape[0] != batch.batch.max()+1:
+                print(f"graph feats {graph_features.shape[0]}, text feat {text_features.shape[0]} batch {batch.batch.max()+1}")
 
             labels = torch.arange(batch.batch.max()+1 ,dtype=torch.long, device=device)
 
