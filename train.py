@@ -15,7 +15,7 @@ def train(graph_model, text_model, tokenizer, loader, device, epoch):
             opt.zero_grad()
 
             # Convert text to tensors
-            tokens = tokenizer(batch.y, padding=False, truncation=True, return_tensors="pt")["input_ids"].to(device)
+            tokens = tokenizer(batch.y, padding=False, truncation=False, return_tensors="pt")["input_ids"].to(device)
             text_features = text_model(tokens).pooler_output
             
             graph_features = graph_model(batch)
