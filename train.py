@@ -5,7 +5,7 @@ from data import CustomDataset
 from tqdm import tqdm
 import torch
 
-def train(graph_model, text_model, tokenizer, loader, epoch):
+def train(graph_model, text_model, tokenizer, loader, device, epoch):
     count = 0
     for _  in tqdm(range(epoch)):
         total_loss = 0
@@ -15,7 +15,7 @@ def train(graph_model, text_model, tokenizer, loader, epoch):
             opt.zero_grad()
 
             # Convert text to tensors
-            tokens = tokenizer(batch.y, padding=True, truncation=True, return_tensors="pt")["input_ids"]
+            tokens = tokenizer(batch.y, padding=True, truncation=True, return_tensors="pt")["input_ids"].to(device)
             text_features = text_model(tokens).pooler_output
             
             graph_features = graph_model(batch)
@@ -50,7 +50,7 @@ if __name__ == "__main__":
             ])
 
     
-    train(gnn_model, biobert, tokenizer, loader, 5)
+    train(gnn_model, biobert, tokenizer, loader, device, 5)
     
     
     
