@@ -38,7 +38,7 @@ def train(graph_model, text_model, tokenizer, loader, device, epochs):
             total_loss = total_loss + loss
         
         wandb.log({'loss': total_loss/len(loader)})
-        if epoch > 99 and epoch % 50 == 0:
+        if epoch > 99 and epoch % 100 == 0:
             torch.save(gnn_model.state_dict(), 'gnn.pth')
     
 
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     opt = torch.optim.AdamW(gnn_model.parameters(), 1e-4)
 
     
-    train(gnn_model, biobert, tokenizer, loader, device, 500)
+    train(gnn_model, biobert, tokenizer, loader, device, 5000)
     
     
     
