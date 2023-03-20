@@ -39,7 +39,7 @@ def train(graph_model, text_model, tokenizer, loader, device, epochs):
         
         wandb.log({'loss': total_loss/len(loader)})
         if epoch > 99 and epoch % 100 == 0:
-            torch.save(gnn_model.state_dict(), 'gnn.pth')
+            torch.save(gnn_model.state_dict(), 'gnn' + str(epoch) + '.pth')
     
 
 if __name__ == "__main__":
