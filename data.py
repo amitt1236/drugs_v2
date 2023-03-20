@@ -80,7 +80,7 @@ e_map = {
 }
 
 
-def from_smiles(y, smiles: str, with_hydrogen: bool = False,
+def from_smiles(y, inchi: str, with_hydrogen: bool = False,
                 kekulize: bool = False) -> 'torch_geometric.data.Data':
     r"""Converts a SMILES string to a :class:`torch_geometric.data.Data`
     instance.
@@ -92,10 +92,10 @@ def from_smiles(y, smiles: str, with_hydrogen: bool = False,
         kekulize (bool, optional): If set to :obj:`True`, converts aromatic
             bonds to single/double bonds. (default: :obj:`False`)
     """
-    mol = Chem.MolFromSmiles(smiles)
+    mol = Chem.MolFromInchi(inchi)
 
     if mol is None:
-        mol = Chem.MolFromSmiles('')
+        mol = Chem.MolFromInchi('')
     if with_hydrogen:
         mol = Chem.AddHs(mol)
     if kekulize:
@@ -139,7 +139,7 @@ def from_smiles(y, smiles: str, with_hydrogen: bool = False,
         perm = (edge_index[0] * x.size(0) + edge_index[1]).argsort()
         edge_index, edge_attr = edge_index[:, perm], edge_attr[perm]
 
-    return Data(x=x.type(torch.float), edge_index=edge_index, edge_attr=edge_attr.type(torch.float), smiles=smiles, y=y)
+    return Data(x=x.type(torch.float), edge_index=edge_index, edge_attr=edge_attr.type(torch.float), inchi=inchi, y=y)
 
 
 def to_smiles(data: 'torch_geometric.data.Data',
@@ -208,9 +208,9 @@ class CustomDataset(Dataset):
         return len(self.lst)
 
     def __getitem__(self, idx):
-        smiles = self.lst.iloc[idx]['smiles'] 
+        inchi = self.lst.iloc[idx]['inchi'] 
         name = self.lst.iloc[idx]['name'] 
         text = self.lst.iloc[idx]['indication']
-        G = from_smiles([name, text], smiles)
+        G = from_smiles(text, inchi)
         
         return G

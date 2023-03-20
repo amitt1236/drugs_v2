@@ -1,2 +1,6 @@
 /.DS_Store
 /__pycache__
+train_langeval.py
+/wandb
+/parse_data/drugs.xml
+/parse_data/.DS_Store

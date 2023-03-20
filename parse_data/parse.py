@@ -11,12 +11,12 @@ def collapse_list_values(row):
     return row
 
 # load xml
-tree = ET.parse("/Users/amitaflalo/Desktop/drugs_v2/parse_data/drugs.xml")
+tree = ET.parse("/Users/amitaflalo/Desktop/drugs_v1/parse_data/drugs.xml")
 root = tree.getroot()
 
 # parse data
 ns = '{http://www.drugbank.ca}'
-smiles  = "{ns}calculated-properties/{ns}property[{ns}kind='SMILES']/{ns}value"
+inchi  = "{ns}calculated-properties/{ns}property[{ns}kind='InChI']/{ns}value"
 counter = 0
 rows = list()
 count = 0
@@ -31,11 +31,11 @@ for drug in tqdm(root):
     
     ind = ind[0].split('.')[0]
 
-    if (not any("approved" in s for s in groups)) or drug.findtext(smiles.format(ns = ns)) is None:
+    if (not any("approved" in s for s in groups)) or drug.findtext(inchi.format(ns = ns)) is None:
         continue
 
     try:
-        mol = Chem.MolFromSmiles(drug.findtext(smiles.format(ns = ns)))
+        mol = Chem.MolFromInchi(drug.findtext(inchi.format(ns = ns)))
     except:
         continue
 
@@ -45,7 +45,7 @@ for drug in tqdm(root):
     row['name'] = drug.findtext(ns + "name")
     row['groups'] = groups
     row['indication'] = ind
-    row['smiles'] = drug.findtext(smiles.format(ns = ns))
+    row['inchi'] = drug.findtext(inchi.format(ns = ns))
     row['type'] = drug.get('type')
 
     rows.append(row)
@@ -53,14 +53,14 @@ for drug in tqdm(root):
     
 rows = list(map(collapse_list_values, rows))
 
-columns = ['drugbank_id', 'name', 'groups', 'indication', 'smiles', 'type']
+columns = ['drugbank_id', 'name', 'groups', 'indication', 'inchi', 'type']
 drugbank_df = pd.DataFrame.from_dict(rows)[columns]
 # print(drugbank_df['indication'])
 
 
 drugbank_slim_df = drugbank_df[
     drugbank_df.groups.map(lambda x: 'approved' in x) &
-    drugbank_df.smiles.map(lambda x: x is not None) &
+    drugbank_df.inchi.map(lambda x: x is not None) &
     drugbank_df.type.map(lambda x: x == 'small molecule') &
     drugbank_df.indication.map(lambda x: x is not None)
 ]

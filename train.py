@@ -15,7 +15,7 @@ def train(graph_model, text_model, tokenizer, loader, device, epoch):
             opt.zero_grad()
 
             # Convert text to tensors
-            tokens = tokenizer(batch.y, padding=True, truncation=False, return_tensors="pt")["input_ids"].to(device)
+            tokens = tokenizer.batch_encode_plus(batch.y, add_special_tokens=True, padding='max_length', truncation=True, max_length=128 ,return_tensors="pt", return_attention_mask=True)["input_ids"].to(device)
             text_features = text_model(tokens).pooler_output
             
             graph_features = graph_model(batch)
@@ -25,7 +25,7 @@ def train(graph_model, text_model, tokenizer, loader, device, epoch):
             labels = torch.arange(batch.batch.max()+1 ,dtype=torch.long, device=device)
 
             loss = gnn_model.loss(graph_features, text_features, labels)
-
+            print(loss)
             loss.backward()
             opt.step()
             total_loss = total_loss + loss

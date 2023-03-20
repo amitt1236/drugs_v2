@@ -31,4 +31,4 @@ def get_summary(file):
     lst.to_csv('sum.csv')
     print(fail)
 if __name__ == "__main__":
-    get_summary('./parse_data/drugs_all_clean.csv')
+    get_summary('./parse_data/drugs_all.csv')
