@@ -7,9 +7,9 @@ import torch
 import wandb
 wandb.init(project="train_langval")
 
-def train(graph_model, text_model, tokenizer, loader, device, epoch):
+def train(graph_model, text_model, tokenizer, loader, device, epochs):
     count = 0
-    for _  in tqdm(range(epoch)):
+    for epoch in tqdm(range(epochs)):
         total_loss = 0
         for batch in loader:
             batch = batch.to(device)
@@ -38,6 +38,8 @@ def train(graph_model, text_model, tokenizer, loader, device, epoch):
             total_loss = total_loss + loss
         
         wandb.log({'loss': total_loss/len(loader)})
+        if epoch > 99 and epoch % 50 == 0:
+            torch.save(gnn_model.state_dict(), 'gnn.pth')
     
 
 if __name__ == "__main__":
