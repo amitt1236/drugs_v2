@@ -33,7 +33,6 @@ def train(graph_model, text_model, tokenizer, loader, device, epoch):
             labels = torch.arange(batch.batch.max()+1 ,dtype=torch.long, device=device)
 
             loss = gnn_model.loss(graph_features, mean_embeddings, labels)
-            print(loss)
             loss.backward()
             opt.step()
             total_loss = total_loss + loss
