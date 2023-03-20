@@ -58,7 +58,7 @@ if __name__ == "__main__":
     opt = torch.optim.AdamW(gnn_model.parameters(), 1e-4)
 
     
-    train(gnn_model, biobert, tokenizer, loader, device, 50)
+    train(gnn_model, biobert, tokenizer, loader, device, 500)
     
     
     
