@@ -12,7 +12,15 @@ def index_2d(myList, v):
         if v in x:
             return i
         
-def validate(dataset, gnn_model, text_model, text):
+def validate(gnn_model, text_model, tokenizer):
+    # Text
+    text = "treat or prevent some types of bacterial infection."
+
+    # Data
+    df = pd.read_csv('./val_data/val.csv')
+    df = df[['Name','SMILES']]
+    dataset = [from_smiles(row['Name'], row['SMILES']) for idx, row in df.iterrows()]
+
     tokens = tokenizer(text , add_special_tokens=True, padding='max_length', truncation=True, max_length=77 ,return_tensors="pt", return_attention_mask=True)
     attention_mask = tokens.attention_mask
     tokens = tokens["input_ids"]
@@ -37,13 +45,11 @@ def validate(dataset, gnn_model, text_model, text):
 
     top100 = np.array(lst[:500])
     same = np.count_nonzero(top100[top100<500])
-    print(index_2d(stacked, 'SU3327'))
-    print(same)
+    
+    return [index_2d(stacked, 'SU3327'), same]
+
 if __name__ == '__main__':
-    # Data
-    df = pd.read_csv('./val_data/val.csv')
-    df = df[['Name','SMILES']]
-    dataset = [from_smiles(row['Name'], row['SMILES']) for idx, row in df.iterrows()]
+
     
     # gnn model
     gnn_model = GNNEncoder(9, 256, 768, 'GAT')
@@ -60,6 +66,5 @@ if __name__ == '__main__':
     # text = "penicillin derivative used for the treatment of infections caused by gram-positive bacteria,\
     # in particular streptococcal bacteria causing upper respiratory tract infections."
     # text = "treat or prevent some types of bacterial infection."
-    text = "treat or prevent some types of bacterial infection."
 
-    validate(dataset, gnn_model, biobert, text)
+    print(validate( gnn_model, biobert, tokenizer))
