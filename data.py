@@ -139,7 +139,7 @@ def from_smiles(y, smiles: str, with_hydrogen: bool = False,
         perm = (edge_index[0] * x.size(0) + edge_index[1]).argsort()
         edge_index, edge_attr = edge_index[:, perm], edge_attr[perm]
 
-    return Data(x=x.type(torch.float), edge_index=edge_index, edge_attr=edge_attr.type(torch.float), inchi=inchi, y=y)
+    return Data(x=x.type(torch.float), edge_index=edge_index, edge_attr=edge_attr.type(torch.float), smiles=smiles, y=y)
 
 
 def to_smiles(data: 'torch_geometric.data.Data',
