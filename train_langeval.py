@@ -41,7 +41,7 @@ def train(graph_model, text_model, tokenizer, loader, device, epochs):
             total_loss = total_loss + loss
         
         wandb.log({'loss': total_loss/len(loader)})
-        if epoch % 100 == 0:
+        if epoch > 99 and epoch % 100 == 0:
             graph_model.eval()
             res = validate(graph_model, text_model, tokenizer, device)
             wandb.log({'halicin': res[0]})
