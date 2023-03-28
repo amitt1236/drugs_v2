@@ -3,3 +3,4 @@
 /wandb
 /parse_data/drugs.xml
 /parse_data/.DS_Store
+gnn3500.pth
