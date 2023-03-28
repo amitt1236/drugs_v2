@@ -12,7 +12,7 @@ def index_2d(myList, v):
         if v in x:
             return i
         
-def validate(gnn_model, text_model, tokenizer):
+def validate(gnn_model, text_model, tokenizer, device):
     # Text
     text = "treat or prevent some types of bacterial infection."
 
@@ -23,7 +23,7 @@ def validate(gnn_model, text_model, tokenizer):
 
     tokens = tokenizer(text , add_special_tokens=True, padding='max_length', truncation=True, max_length=77 ,return_tensors="pt", return_attention_mask=True)
     attention_mask = tokens.attention_mask
-    tokens = tokens["input_ids"]
+    tokens = tokens["input_ids"].to(device)
     with torch.no_grad():
         text_features = text_model(tokens)
         last_hidden_state = text_features.last_hidden_state
@@ -37,6 +37,7 @@ def validate(gnn_model, text_model, tokenizer):
     loader = DataLoader(dataset, batch_size=9600, shuffle=True)
     for batch in loader:
         with torch.no_grad():
+            batch = batch.to(device)
             output = gnn_model(batch)
     order = np.array([scipy.spatial.distance.cosine(i, mean_embeddings) for i in output], dtype=np.float32)
     stacked = np.concatenate(((np.expand_dims(order, axis=1), np.expand_dims(np.array(batch.y), axis=1))), axis=1)
