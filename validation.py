@@ -25,7 +25,7 @@ def validate(gnn_model, text_model, tokenizer, device):
     attention_mask = tokens.attention_mask
     tokens = tokens["input_ids"].to(device)
     with torch.no_grad():
-        text_features = text_model(tokens)
+        text_features = text_model(tokens).detach().cpu()
         last_hidden_state = text_features.last_hidden_state
         input_mask_expanded = attention_mask.unsqueeze(-1).expand(last_hidden_state.size()).float()
         sum_embeddings = torch.sum(last_hidden_state * input_mask_expanded, 1)
@@ -38,7 +38,7 @@ def validate(gnn_model, text_model, tokenizer, device):
     for batch in loader:
         with torch.no_grad():
             batch = batch.to(device)
-            output = gnn_model(batch)
+            output = gnn_model(batch).detach().cpu()
     order = np.array([scipy.spatial.distance.cosine(i, mean_embeddings) for i in output], dtype=np.float32)
     stacked = np.concatenate(((np.expand_dims(order, axis=1), np.expand_dims(np.array(batch.y), axis=1))), axis=1)
     stacked = stacked[np.array(stacked[:, 0], dtype=np.float32).argsort()]
