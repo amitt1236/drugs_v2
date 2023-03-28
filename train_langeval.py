@@ -45,7 +45,7 @@ def train(graph_model, text_model, tokenizer, loader, device, epochs):
 if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # load data
-    dataset = CustomDataset('./parse_data/sum.csv')
+    dataset = CustomDataset('./parse_data/sum_smiles.csv')
     loader = DataLoader(dataset, batch_size=36, shuffle=True)
 
     # Load BioBERT pre-trained model and tokenizer
