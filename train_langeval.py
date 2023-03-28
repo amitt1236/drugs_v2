@@ -5,7 +5,7 @@ from data import CustomDataset
 from tqdm import tqdm
 import torch
 import wandb
-
+from torch.optim.lr_scheduler import CosineAnnealingLR
 from validation import validate
 
 wandb.init(project="train_langval")
@@ -41,6 +41,7 @@ def train(graph_model, text_model, tokenizer, loader, device, epochs):
             total_loss = total_loss + loss
         
         wandb.log({'loss': total_loss/len(loader)})
+        scheduler.step()
         if epoch > 99 and epoch % 100 == 0:
             graph_model.eval()
             res = validate(graph_model, text_model, tokenizer, device)
@@ -64,7 +65,10 @@ if __name__ == "__main__":
     gnn_model = GNNEncoder(9, 256, 768, 'GAT').to(device)
     gnn_model.train()
 
-    opt = torch.optim.AdamW(gnn_model.parameters(), 1e-4)
+    opt = torch.optim.AdamW(gnn_model.parameters())
+    scheduler = CosineAnnealingLR(opt,
+                              T_max = 5000, # Maximum number of iterations.
+                             eta_min = 1e-5) # Minimum learning rate.
 
     
     train(gnn_model, biobert, tokenizer, loader, device, 5000)
