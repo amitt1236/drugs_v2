@@ -43,12 +43,10 @@ def train(graph_model, text_model, tokenizer, loader, device, epochs):
         wandb.log({'loss': total_loss/len(loader)})
         if epoch > 99 and epoch % 100 == 0:
             graph_model.eval()
-            text_model.eval()
             res = validate(graph_model, text_model, tokenizer)
             wandb.log({'halicin': res[0]})
             wandb.log({'overlap': res[1]})
             graph_model.train()
-            text_model.train()
             torch.save(gnn_model.state_dict(), 'gnn' + str(epoch) + '.pth')
     
 
