@@ -68,4 +68,4 @@ if __name__ == '__main__':
     # in particular streptococcal bacteria causing upper respiratory tract infections."
     # text = "treat or prevent some types of bacterial infection."
 
-    print(validate( gnn_model, biobert, tokenizer))
+    print(validate( gnn_model, biobert, tokenizer, device='cpu'))
